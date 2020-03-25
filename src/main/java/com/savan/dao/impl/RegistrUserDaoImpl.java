@@ -33,6 +33,7 @@ public class RegistrUserDaoImpl implements RegisterUserDao {
 		try {
 			con = DBConnection.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
+			
 			ps.setString(1, userModel.getFirstName());
 			ps.setString(2, userModel.getLastName());
 			ps.setString(3, userModel.getPassword());
@@ -45,6 +46,7 @@ public class RegistrUserDaoImpl implements RegisterUserDao {
 			ps.setInt(10, 2);
 
 			int ans = ps.executeUpdate();
+			
 			if (ans > 0) {
 				return true;
 			} else {
@@ -250,6 +252,7 @@ public class RegistrUserDaoImpl implements RegisterUserDao {
 
 			con = DBConnection.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
+			
 			ps.setString(1, userModel.getFirstName());
 			ps.setString(2, userModel.getLastName());
 			ps.setString(3, userModel.getPassword());
@@ -263,6 +266,7 @@ public class RegistrUserDaoImpl implements RegisterUserDao {
 			ps.setInt(11, userId);
 
 			int ans = ps.executeUpdate();
+			
 			if (ans > 0) {
 				return true;
 			} else {
@@ -288,6 +292,7 @@ public class RegistrUserDaoImpl implements RegisterUserDao {
 			ps.setInt(1, userId);
 
 			int ans = ps.executeUpdate();
+			
 			if (ans > 0) {
 				return true;
 			} else {
@@ -311,6 +316,7 @@ public class RegistrUserDaoImpl implements RegisterUserDao {
 			con = DBConnection.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, name);
+			
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
@@ -322,7 +328,6 @@ public class RegistrUserDaoImpl implements RegisterUserDao {
 			e.printStackTrace();
 		}
 
-		
 		return null;
 	}
 

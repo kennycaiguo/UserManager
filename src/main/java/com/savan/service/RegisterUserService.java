@@ -16,28 +16,28 @@ import com.savan.model.RegisterUserModel;
  */
 public interface RegisterUserService {
 
-	//user service method
+	//Register User
 	public boolean userService(HttpServletRequest request, HttpServletResponse response);
 	
-	//method to get last index id
+	//get last inserted User's Id 
 	public int getIndex();
 	
 	//get user id
 	public int getUserId(String email);
 	
-	//get role
+	//get logging user's role
 	public int getUserRole(String email);
 	
-	//get user data
+	//get user specific details
 	public RegisterUserModel getUserInfo(int userId);
 	
-	//get all user
+	//get all users details
 	public List<RegisterUserModel> getAllUser();
 	
-	//update user
+	//update user's details
 	public boolean updateUser(HttpServletRequest request, HttpServletResponse response,int userId);
 	
-	//delete user 
+	//Remove user's details 
 	public boolean deleteUser(int userId);
 
 	//check user exists

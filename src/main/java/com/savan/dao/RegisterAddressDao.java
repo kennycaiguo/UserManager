@@ -5,10 +5,8 @@ package com.savan.dao;
 
 import java.util.List;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.savan.model.RegisterAddressModel;
 
 /**
  * @author SAVAN
@@ -22,16 +20,16 @@ public interface RegisterAddressDao {
 	//Fetching user address from the database
 	public JSONObject fatchAddress(int userId);
 
-	//getting all users address
-	public List<List<String>> fetchAllUserAddress();
-
 	//update user address
 	public boolean update(List<List<String>> addressList, int userId);
 
-	//deleting user Address
+	//deleting user's All Address
 	public boolean remoeUserAddress(int userId);
 	
-	//delete address
+	//delete selected address 
 	public boolean remoeSelectedAddress(int addressId);
+	
+	//fatch user Address Count
+	public boolean fatchAddressCount(int userId);
 	
 }

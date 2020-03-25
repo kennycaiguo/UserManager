@@ -9,7 +9,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.savan.service.RegisterAddressService;
@@ -23,7 +22,7 @@ import com.savan.dao.impl.RegistrAddressDaoImpl;
  */
 public class RegisterAddressServiceImpl implements RegisterAddressService {
 
-	@Override
+	@Override //used
 	public boolean addressService(HttpServletRequest request, HttpServletResponse response , int lastId) {
 		
 		//Add user input to Address model class
@@ -62,29 +61,20 @@ public class RegisterAddressServiceImpl implements RegisterAddressService {
 			//appaend seprate addresses to addresslist
 			addressList.add(address);
 		}
-
 		
 		//RegisterAddressDaoImpl to register user Address
 		RegisterAddressDao addressDao = new RegistrAddressDaoImpl();
 		return addressDao.insert(addressList,lastId);
 	}
 
-	@Override
+	@Override //used
 	public JSONObject getAddressInfo(int userId) {
 		//getting the user address
 		RegisterAddressDao addressdao = new RegistrAddressDaoImpl();
 		return addressdao.fatchAddress(userId);
 	}
 
-	@Override
-	public List<List<String>> getAllUserAddress() {
-		
-		//getting the user address
-		RegisterAddressDao addressdao = new RegistrAddressDaoImpl();
-		return addressdao.fetchAllUserAddress();
-	}
-
-	@Override
+	@Override //used
 	public boolean updateUserAddress(HttpServletRequest request, HttpServletResponse response, int userId) {
 		
 		// Add user input to Address model class
@@ -127,14 +117,12 @@ public class RegisterAddressServiceImpl implements RegisterAddressService {
 			addressList.add(address);
 		}
 		
-		
-
 		// RegisterAddressDaoImpl to register user Address
 		RegisterAddressDao addressDao = new RegistrAddressDaoImpl();
 		return addressDao.update(addressList, userId);
 	}
 
-	@Override
+	@Override //used
 	public boolean deleteUserAddress(int userId) {
 
 		// RegisterAddressDaoImpl to register user Address
@@ -143,12 +131,20 @@ public class RegisterAddressServiceImpl implements RegisterAddressService {
 		
 	}
 
-	@Override
+	@Override //used
 	public boolean deleteSelectedAddress(int addressId) {
 
 		// RegisterAddressDaoImpl to register user Address
 		RegisterAddressDao addressDao = new RegistrAddressDaoImpl();
 		return addressDao.remoeSelectedAddress(addressId);
+	}
+
+	@Override //used
+	public boolean getAddressCount(int userId) {
+
+		// RegisterAddressDaoImpl to register user Address
+		RegisterAddressDao addressDao = new RegistrAddressDaoImpl();
+		return addressDao.fatchAddressCount(userId);
 	}
 
 	

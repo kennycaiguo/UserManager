@@ -32,13 +32,16 @@ import com.savan.service.RegisterUserService;
 @MultipartConfig
 public class RegisterUserServiceImpl implements RegisterUserService {
 
-	@Override
+	//user Model object
+	RegisterUserModel userModel = null;
+	
+	@Override 
 	public boolean userService(HttpServletRequest request, HttpServletResponse response) {
 
-		// Add user input to User model class
-		RegisterUserModel userModel = new RegisterUserModel();
-
 		try {
+
+			// Add user input to User model class
+			userModel = new RegisterUserModel();
 
 			// Check-box values
 			String permission = "";
@@ -69,26 +72,23 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 		}
 
 		// RegisterDaoimpl to register user
-		/*RegisterUserDao regdao = new RegistrUserDaoImpl();
-		return regdao.insert(userModel);*/
-		return true;
-
+		RegisterUserDao regdao = new RegistrUserDaoImpl();
+		return regdao.insert(userModel);
 	}
 
-	@Override
+	@Override 
 	public int getIndex() {
 
-		// RegisterDaoimpl to register user
+		// RegisterDaoimpl to register user 
 		RegisterUserDao regdao = new RegistrUserDaoImpl();
 		return regdao.lastRow();
-
 	}
 
-	@Override
+	@Override 
 	public RegisterUserModel getUserInfo(int userId) {
 
 		// userModel instantiation
-		RegisterUserModel userModel = new RegisterUserModel();
+		userModel = new RegisterUserModel();
 
 		// getting the user data
 		RegisterUserDao userDao = new RegistrUserDaoImpl();
@@ -118,6 +118,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 
 	@Override
 	public List<RegisterUserModel> getAllUser() {
+		
 		// RegisterDaoimpl to register user
 		RegisterUserDao regdao = new RegistrUserDaoImpl();
 
@@ -157,25 +158,23 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 		return userList;
 	}
 
-	@Override
+	@Override 
 	public int getUserRole(String email) {
 		
 		// RegisterDaoimpl to register user
 		RegisterUserDao regdao = new RegistrUserDaoImpl();
-		
 		return regdao.getUserRole(email);
 	}
 
-	@Override
+	@Override 
 	public int getUserId(String email) {
 
 		// RegisterDaoimpl to register user
 		RegisterUserDao regdao = new RegistrUserDaoImpl();
-		
 		return regdao.getUserId(email);
 	}
 
-	@Override
+	@Override 
 	public boolean updateUser(HttpServletRequest request, HttpServletResponse response,int userId) {
 		
 		// Add user input to User model class
@@ -220,7 +219,6 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 			userModel.setGender(request.getParameter("gender"));
 			userModel.setHobbies(request.getParameter("hobby"));
 			userModel.setPermission(permission);
-			/* userModel.setImage(image.getInputStream()); */
 
 		} catch (IOException | ServletException e) {
 			e.printStackTrace();
@@ -232,7 +230,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 		
 	}
 
-	@Override
+	@Override 
 	public boolean deleteUser(int userId) {
 		
 		// RegisterDaoimpl to register user
@@ -240,18 +238,20 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 		return regdao.removeUser(userId);
 	}
 
-	@Override
+	@Override 
 	public boolean userExists(String email) {
 		
 		// RegisterDaoimpl to register user
 		RegisterUserDao regdao = new RegistrUserDaoImpl();
-		if(regdao.isEmailExist(email)) {
-			return true;
-		}
-		return false;
+			if(regdao.isEmailExist(email)) {
+				return true;
+			}
+			else {
+				return false;
+			}
 	}
 
-	@Override
+	@Override 
 	public String findPassword(String name) {
 
 		// RegisterDaoimpl to register user
@@ -259,7 +259,5 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 		return regdao.fatchPassword(name);
 		
 	}
-
-	
 
 }

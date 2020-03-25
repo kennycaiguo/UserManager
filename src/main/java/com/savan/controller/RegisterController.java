@@ -11,12 +11,10 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.google.gson.Gson;
-import com.savan.model.RegisterAddressModel;
 import com.savan.model.RegisterUserModel;
 import com.savan.service.RegisterAddressService;
 import com.savan.service.RegisterUserService;
@@ -56,12 +54,11 @@ public class RegisterController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		//session creation
+		HttpSession session = request.getSession();
 
 		// userModel instantiation
 		RegisterUserModel userModel = new RegisterUserModel();
-
-		// addressModel instantiation
-		RegisterAddressModel addressModel = new RegisterAddressModel();
 
 		// userService instantiation
 		RegisterUserService userService = new RegisterUserServiceImpl();
@@ -71,6 +68,7 @@ public class RegisterController extends HttpServlet {
 
 		if (request.getParameter("operaton").equals("Update")) {
 
+			//getting user id for identify user
 			int userId = Integer.parseInt(request.getParameter("id"));
 
 			// get user info from database
@@ -78,46 +76,17 @@ public class RegisterController extends HttpServlet {
 
 			// get user Address from database
 			JSONObject userAddressModel = addressService.getAddressInfo(userId);
-
-			request.setAttribute("userData", userModel);
-			request.setAttribute("addressData", userAddressModel);
-			request.setAttribute("operation", request.getParameter("operaton"));
-			request.setAttribute("userId", request.getParameter("id"));
-			request.setAttribute("userRole", request.getParameter("role"));
-
-			RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
-			if (rd != null) {
-				rd.forward(request, response);
-			} else {
-				System.out.println("Unexpected error......!!!");
-			}
-		}
-		else {
-
-			int userId = Integer.parseInt(request.getParameter("operaton"));
-			System.out.println("user id to delet"+userId);
 			
-			// delete user Address
-			boolean isuserAddressDeleted = addressService.deleteUserAddress(userId);
-
-			if (isuserAddressDeleted) {
-
-				// deleting user
-				boolean isuserDeleted = userService.deleteUser(userId);
-
-				if (isuserDeleted) {
-					System.out.println("Successfully user deleted....");
-				} else {
-					System.out.println("fail to delelte user.....");
-				}
-
-			} else {
-				System.out.println("fail to delelte user Address.....");
-			}
-
+			//setting data into session 
+			session.setAttribute("userData", userModel);
+			session.setAttribute("addressData", userAddressModel);
+			session.setAttribute("operation", request.getParameter("operaton"));
+			session.setAttribute("userId", request.getParameter("id"));
+			session.setAttribute("userRole", request.getParameter("role"));
+			
+			//redirect ot register.jsp
+			response.sendRedirect("register.jsp");
 		}
-		
-
 
 	}
 
@@ -128,167 +97,212 @@ public class RegisterController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		//session creation
+		HttpSession session = request.getSession();
+		
 		// User Register object
 		RegisterUserService userRegister = new RegisterUserServiceImpl();
 
 		// redirect to the Register Address
 		RegisterAddressService addressRegister = new RegisterAddressServiceImpl();
-
+		
 		// Validation utility class object
-		/*validateUser valid = new validateUser();
+		 validateUser valid = new validateUser();
 
-		// check user details
-		String isDataValid = valid.validateUserDetails(request, response);
+		/*
+		 * 
+		 * Update User Details
+		 * 
+		 */
+		if (request.getParameter("operation").contentEquals("Update")) {
+			
+				//userModel instantiation
+				RegisterUserModel userModel = new RegisterUserModel();
 		
-		if (isDataValid != "success") {
-			System.out.println("4");
+				// getting userId
+				int userId = Integer.parseInt(request.getParameter("uid"));
+				
+				// updating userData
+				boolean isUserUpdated = userRegister.updateUser(request, response, userId);
+				
+				
+				if (isUserUpdated) {
+					
+					// updating user Address Data
+					boolean isAddressUpdated = addressRegister.updateUserAddress(request, response, userId);
+					
+					if (isAddressUpdated) {
+						
+						//Select view to response from the update request
+						if (request.getParameter("userRole").contentEquals("admin")) {
+														
+							//getting all user info
+							List<RegisterUserModel> userList = userRegister.getAllUser();
+							
+							//setting values to session 
+							session.setAttribute("role", "admin");
+							session.setAttribute("userList", userList);
+							
+							//set max session time till brouser closed
+							session.setMaxInactiveInterval(-1);
+							
+							//redirect to result.jsp
+							response.sendRedirect("result.jsp");
+						}
+						else {
+							
+							//get user info from database
+							userModel = userRegister.getUserInfo(userId);
+							
+							// get user Address from database 
+							JSONObject userAddress = addressRegister.getAddressInfo(userId);
+
+							//setting values to session 
+							session.setAttribute("role", "user");
+							session.setAttribute("addressData", userAddress);
+							session.setAttribute("userData", userModel);
+							
+							//set max session time to 30 Minutes
+							session.setMaxInactiveInterval(30 * 60);
+										
+							//redirect to result.jsp
+							response.sendRedirect("result.jsp");
+						}
+					} else {
+						System.out.println("Address Updated fail....");
+					}
+					
+				} else {
+					System.out.println("User Updated fail....");
+				}
 			
-			request.setAttribute("errMassage", isDataValid);
-			request.setAttribute("firstName", request.getParameter("firstNname")); 
-			request.setAttribute("lastName", request.getParameter("lastNname"));
-			request.setAttribute("email", request.getParameter("email"));
-			request.setAttribute("contact", request.getParameter("contact"));
-			request.setAttribute("home", request.getParameter("home"));
-			request.setAttribute("leandmark", request.getParameter("leandmark"));
-			request.setAttribute("city", request.getParameter("City"));
-			request.setAttribute("state", request.getParameter("State"));
-			request.setAttribute("country", request.getParameter("Country"));
-			request.setAttribute("zipCode", request.getParameter("ZipCode"));
-			
-			
-			// writing the error massage of validation
-			RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
-			rd.forward(request, response);
-		}*/
+		 }
 		
-		/*else if (request.getParameter("Register").contentEquals("Update")) {
-			
-			//userModel instantiation
-			RegisterUserModel userModel = new RegisterUserModel();
-			
-			//addressModel instantiation
-			RegisterAddressModel addressModel = new RegisterAddressModel();
-			
-			// getting userId
-			int userId = Integer.parseInt(request.getParameter("uid"));
+		/*
+		 * 
+		 * Add new Address for existing user
+		 * 
+		 */
+		 if (request.getParameter("operation").contentEquals("newAddress")) {
 
-			// updating userData
-			boolean isUserUpdated = userRegister.updateUser(request, response, userId);
+				// validate user Address details
+				String isDataValid = valid.validateAddress(request, response);
+				
+				if (isDataValid != "success") {
+					response.getWriter().write("Invalid Address Formate...!!");
+				}
+				else {
 
+					//getting userId
+					int userId = Integer.parseInt(request.getParameter("userId"));
+					
+					// add user address to database
+					boolean isadded = addressRegister.addressService(request, response, userId);
+					
+					if (isadded) {
+						
+						// get user Address from database 
+						JSONObject userAddress = addressRegister.getAddressInfo(userId);
+						
+						//update the session value
+						session.setAttribute("addressData", userAddress);
+						
+						response.getWriter().write("Address added successfully...!!");
+					}
+					else {
+						response.getWriter().write("Fail to Added Address...!!");
+					}
+				}
+		}
+		 
+		/*
+		 * 
+		 * Delete User Address
+		 * 
+		 */ 
+		if (request.getParameter("operation").contentEquals("deleteAddress")) {
 
-			if (isUserUpdated) {
-				System.out.println("User Sucess fully updated....");
+			//fatching the Userid to delete address
+			int userId = Integer.parseInt(request.getParameter("userId"));
+
+			//check address count 
+			boolean isAlloweToDelete = addressRegister.getAddressCount(userId);
+
+			if (isAlloweToDelete) {
+				
+				//fatching the addressid to delete address
+				int addressId = Integer.parseInt(request.getParameter("addressId"));
+				
+				//delete the address from the databse
+				boolean idDeleted = addressRegister.deleteSelectedAddress(addressId);
+				
+				if (idDeleted) {
+					
+					// get user Address from database 
+					JSONObject userAddress = addressRegister.getAddressInfo(userId);
+					
+					//update the session value
+					session.setAttribute("addressData", userAddress);
+					
+					response.getWriter().write("Address successfully Removed ...!!");
+				}
+				else {
+					response.getWriter().write("Fail to Remove Rddress...!!");
+				}
+			}
+			else {
+				response.getWriter().write("One Address Is Required...!!");
+			}
+			
+		}
+		
+		/*
+		 * 
+		 * Update User Address
+		 * 
+		 */
+		if (request.getParameter("operation").contentEquals("updateAddress")) {
+
+			// check user details
+			String isDataValid = valid.validateAddress(request, response);
+			
+			if (isDataValid != "success") {
+				
+				response.getWriter().write("Invalid Address Formate...!!");
+			}
+			else {
+				
+				//get userId 
+				int userId = Integer.parseInt(request.getParameter("userId"));
 				
 				// updating user Address Data
 				boolean isAddressUpdated = addressRegister.updateUserAddress(request, response, userId);
 				
 				if (isAddressUpdated) {
-					System.out.println("Address Sucess fully updated....");
-
-					if (request.getParameter("userRole").equals("admin")) {
-						
-						//to manage admin view
-						String admin = "admin";
-						
-						//getting all user info
-						List<RegisterUserModel> userList = userRegister.getAllUser();
-						
-						//getting all users address
-						List<List<String>> userAddressList = addressRegister.getAllUserAddress();
-						
-						request.setAttribute("userAddressList", userAddressList);
-						request.setAttribute("userList", userList);
-						request.setAttribute("Login", admin);
-						
-						RequestDispatcher rd = request.getRequestDispatcher("result.jsp");
-						if (rd != null) {
-							rd.forward(request, response);
-						}
-						else {
-							System.out.println("Unexpected error......!!!");
-						}
-					}
-					else {
-						
-						//to manage user view
-						String user = "user";
-						
-						//get user info from database
-						userModel = userRegister.getUserInfo(userId);
-						
-						//get user Address from database
-						List<List<String>> userAddressModel = addressRegister.getAddressInfo(userId);
-						
-						request.setAttribute("userData", userModel);
-						request.setAttribute("addressData", userAddressModel);
-						request.setAttribute("Login", user);
-						
-						RequestDispatcher rd = request.getRequestDispatcher("result.jsp");
-						if (rd != null) {
-							rd.forward(request, response);
-						}
-						else {
-							System.out.println("Unexpected error......!!!");
-						}
-					}
-				} else {
-					System.out.println("Address Updated fail....");
+					
+					// get user Address from database 
+					JSONObject userAddress = addressRegister.getAddressInfo(userId);
+					
+					//update the session value
+					session.setAttribute("addressData", userAddress);
+					
+					response.getWriter().write("User Address Update Success full.........");
 				}
-				
-			} else {
-				System.out.println("User Updated fail....");
+				else {
+					response.getWriter().write("Fail to Update Address...!!");
+				}
 			}
-
-		}*/
-		 if (request.getParameter("operation").equals("newAddress")) {
 			
-			//getting userId
-			int userId = Integer.parseInt(request.getParameter("userId"));
-			
-			// add user address to database
-			boolean isadded = addressRegister.addressService(request, response, userId);
-			
-			if (isadded) {
-				System.out.println("User Address Added Success full.........");
-			}
-			else {
-				response.getWriter().write("Fail to Added Address...!!");
-			}
 		}
-		if (request.getParameter("operation").equals("deleteAddress")) {
-
-			//fatching the addressid to delete address
-			int addressId = Integer.parseInt(request.getParameter("addressId"));
+		
+		/*
+		 * 
+		 * Fatch User Addresses
+		 * 
+		 */
+		if (request.getParameter("operation").contentEquals("fatchAllAddresses")) {
 			
-			//delete the address from the databse
-			boolean idDeleted = addressRegister.deleteSelectedAddress(addressId);
-			
-			if (idDeleted) {
-				System.out.println("User Address Deleteed Success full.........");
-			}
-			else {
-				response.getWriter().write("Fail to Remove Rddress...!!");
-			}
-		}
-		if (request.getParameter("operation").equals("updateAddress")) {
-			System.out.println("address Id "+request.getParameter("addressId"));
-			
-			int addressId = Integer.parseInt(request.getParameter("addressId"));
-			
-			// updating user Address Data
-			boolean isAddressUpdated = addressRegister.updateUserAddress(request, response, addressId);
-			
-			if (isAddressUpdated) {
-				System.out.println("User Address Update Success full.........");
-				response.getWriter().write("User Address Update Success full.........");
-			}
-			else {
-				response.getWriter().write("Fail to Update Address...!!");
-			}
-		}
-		if (request.getParameter("operation").equals("fatchAllAddresses")) {
-			System.out.println("address Id "+request.getParameter("userId"));
-			
+			//get userId 
 			int userId = Integer.parseInt(request.getParameter("userId"));
 			
 			// updating user Address Data
@@ -296,71 +310,140 @@ public class RegisterController extends HttpServlet {
 			
 			response.setContentType("application/json");
 			
-			System.out.println(new Gson().toJson(addressList));
 			response.getWriter().write(addressList.toString());
 			
-			/* new Gson().toJson(addressList, response.getWriter()); */
-			
-			/*if (isAddressUpdated) {
-				System.out.println("User Address Update Success full.........");
-				response.getWriter().write("User Address Update Success full.........");
-			}
-			else {
-				response.getWriter().write("Fail to Update Address...!!");
-			}*/
 		}
-		/*else {
+		
+		/*
+		 * 
+		 * Remove User
+		 * 
+		 */
+		if (request.getParameter("operation").contentEquals("removeUser")) {
+			
+			//get userId 
+			int userId = Integer.parseInt(request.getParameter("userId"));
+			
+			// delete user Address
+			boolean isuserAddressDeleted = addressRegister.deleteUserAddress(userId);
 
-			// add user to database
-			boolean isregister = userRegister.userService(request, response);
+			if (isuserAddressDeleted) {
 
-			// if registered then login
-			if (isregister) {
+				// deleting user
+				boolean isuserDeleted = userRegister.deleteUser(userId);
 
-				System.out.println("User Detail Success full.........");
-
-				// get Id of last inserted row
-				int lastId = userRegister.getIndex();
-
-				// add user address to database
-				boolean isadded = addressRegister.addressService(request, response, lastId);
-
-				if (isadded) {
-					System.out.println("User Address Success full.........");
-
-					// redirecting user to login
-					String massge = "*Login with your e-mail and password";
-					request.setAttribute("loginMsg", massge);
-
-					RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-					rd.forward(request, response);
-				}
+				if (isuserDeleted) {
+					response.getWriter().write("User Deletion Success full.........");
+				} 
 				else {
-					
-					// deleting user
-					boolean isuderDeleted = userRegister.deleteUser(lastId);
-
-					if (isuderDeleted) {
-						System.out.println("User Address registeration Fail.........");
-						
-						request.setAttribute("errMassage", "Process Fail Please Try Again....");
-						
-						// writing the error massage of validation
-						RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
-						rd.forward(request, response);
-					}
+					response.getWriter().write("Fail to Delelte User.........");
 				}
 			} 
 			else {
-				System.out.println("User registeration Fail.........");
+				response.getWriter().write("Fail to Delelte User.........");
+			}
+		}
+		
+		/*
+		 * 
+		 * Forgot Password
+		 * 
+		 */
+		if (request.getParameter("operation").contentEquals("forgotPassword")) {
+			
+			//passeord fatched from the database
+			String password = userRegister.findPassword(request.getParameter("userEmail"));
+			
+			if(password != null) {
+				response.getWriter().write("Your Password Is : "+password);
+			}
+			else {
+				response.getWriter().write("Please Enter Valide Enail Id..!!");
+			}
+			
+		}
+		
+		/*
+		 * 
+		 * Register New User
+		 * 
+		 */
+		if (request.getParameter("operation").contentEquals("Register")) {
+
+			// check user details
+			String isDataValid = valid.validateUserDetails(request, response);
+			
+			//check if data is invalid 
+			if (isDataValid != "success") {
 				
-				request.setAttribute("errMassage", "Process Fail Please Try Again....");
+				//set error massage
+				session.setAttribute("errMassage", isDataValid);
 				
-				// writing the error massage of validation
-				RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
-				rd.forward(request, response);
+				//set form values 
+				session.setAttribute("firstName", request.getParameter("firstNname")); 
+				session.setAttribute("lastName", request.getParameter("lastNname"));
+				session.setAttribute("email", request.getParameter("email"));
+				session.setAttribute("contact", request.getParameter("contact"));
+				session.setAttribute("home", request.getParameter("home"));
+				session.setAttribute("leandmark", request.getParameter("leandmark"));
+				session.setAttribute("city", request.getParameter("City"));
+				session.setAttribute("state", request.getParameter("State"));
+				session.setAttribute("country", request.getParameter("Country"));
+				session.setAttribute("zipCode", request.getParameter("ZipCode"));
+				
+				//redirect to register
+				response.sendRedirect("register.jsp");
+			}
+			else{
+				
+				// add user to database
+				boolean isregister = userRegister.userService(request, response);
+	
+				// if registered then login
+				if (isregister) {
+	
+					// get Id of last inserted row
+					int lastId = userRegister.getIndex();
+	
+					// add user address to database
+					boolean isadded = addressRegister.addressService(request, response, lastId);
+	
+					if (isadded) {
+						
+						//Success Massage
+						request.setAttribute("loginMsg", "*Login with your e-mail and password");
+	
+						// redirecting user to login
+						RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
+						rd.forward(request, response);
+					}
+					else {
+						
+						// deleting user
+						boolean isuderDeleted = userRegister.deleteUser(lastId);
+	
+						if (isuderDeleted) {
+							
+							//Failure Massage
+							request.setAttribute("errMassage", "Process Fail Please Try Again....");
+							
+							// writing the error massage of validation
+							RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
+							rd.forward(request, response);
+						}
+					}
+				} 
+				else {
+					
+					//Failure Massage
+					request.setAttribute("errMassage", "Process Fail Please Try Again....");
+					
+					// writing the error massage of validation
+					RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
+					rd.forward(request, response);
+				}
 			}
 
-		}*/
+		}
 	}
 }

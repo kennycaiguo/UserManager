@@ -26,6 +26,7 @@ public class DBConnection {
 				String db_password = "Root@123";
 
 				try {
+					
 					Class.forName("com.mysql.cj.jdbc.Driver");
 					con = DriverManager.getConnection(url, db_user, db_password);
 				} 
@@ -40,30 +41,5 @@ public class DBConnection {
 
 		return con;
 	}
-	
-	
-	/*public Connection getConnection() {
-
-		Connection con = getConnection();
-		
-		synchronized (con) {
-
-			String url = "jdbc:mysql://localhost:3306/user_detail";
-			String db_user = "root";
-			String db_password = "Root@123";
-
-			try {
-				Class.forName("com.mysql.jdbc.Driver");
-				con = DriverManager.getConnection(url, db_user, db_password);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return con;
-	} */
-	
 	
 }

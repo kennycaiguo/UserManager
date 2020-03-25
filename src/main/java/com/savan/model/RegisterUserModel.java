@@ -12,7 +12,7 @@ import java.io.InputStream;
  */
 public class RegisterUserModel {
 
-	private int userRId;
+	
 	private String firstName;
 	private String lastName;
 	private String password;
@@ -22,14 +22,17 @@ public class RegisterUserModel {
 	private String permission;
 	private String hobbies;
 	
+	//User's Unick ID
+	private int userRId;
+
 	//image to display from database
 	private String displayImage;
 	
 	//for image file 
 	private InputStream image;
 	
-	//user Id
-	private int userId;
+	//userId from Update request
+ 	private int userId;
 	
 	//user Role
 	private int userRole;

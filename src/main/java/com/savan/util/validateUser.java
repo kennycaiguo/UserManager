@@ -79,6 +79,44 @@ public class validateUser {
 		return vlidate;
 	}
 	
+	public String validateAddress(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("inside addresss");
+		System.out.println(request.getParameter("home"));
+		System.out.println(request.getParameter("leandmark"));
+		System.out.println(request.getParameter("City"));
+		System.out.println(request.getParameter("State"));
+		System.out.println(request.getParameter("Country"));
+		System.out.println(request.getParameter("ZipCode"));
+		String vlidate = "success";
+		
+		if (request.getParameter("home") == null || request.getParameter("home").equals("") || (request.getParameter("home").length() < 3) || (request.getParameter("home").length() > 30)) {
+			String error = "*Addressline1 should not be Empty and Length should be 5 to 30 character..!!";
+			return error;
+		}
+		if (request.getParameter("leandmark") == null || request.getParameter("leandmark").equals("") || (request.getParameter("leandmark").length() < 3) || (request.getParameter("leandmark").length() > 30)) {
+			String error = "*Addressline2 should not be Empty and Length should be 5 to 30 character..!!";
+			return error;
+		}
+		if (isContainWhitespace(request.getParameter("City")) || isContainDigit(request.getParameter("City")) || isContainSpecialCharacter(request.getParameter("City")) || (request.getParameter("City").length() < 3) || (request.getParameter("City").length() > 10)) {
+			String error = "*City name should not contain Digit,Special Characters,Space Between Characters and Length should be 3 to 10 character..!!";
+			return error;
+		}
+		if (isContainWhitespace(request.getParameter("State")) || isContainDigit(request.getParameter("State")) || isContainSpecialCharacter(request.getParameter("State")) || (request.getParameter("State").length() < 3) || (request.getParameter("State").length() > 10)) {
+			String error = "*State name should not contain Digit,Special Characters,Space Between Characters and Length should be 3 to 10 character..!!";
+			return error;
+		}
+		if (isContainWhitespace(request.getParameter("Country")) || isContainDigit(request.getParameter("Country")) || isContainSpecialCharacter(request.getParameter("Country")) || (request.getParameter("Country").length() < 4) || (request.getParameter("Country").length() > 10)) {
+			String error = "*Country name should not contain Digit,Special Characters,Space Between Characters and Length should be 4 to 10 character..!!";
+			return error;
+		}
+		if (isContainCharacter(request.getParameter("ZipCode")) || isContainSpecialCharacter(request.getParameter("ZipCode")) || isContainWhitespace(request.getParameter("ZipCode")) || (request.getParameter("ZipCode").length() < 5) || (request.getParameter("ZipCode").length() > 10)) {
+			String error = "*ZipCode should not contain Characters,Special Characters,Space Between Characters and Length must be 5 to 10 Digits..!!";
+			return error;
+		}
+		
+		return vlidate;
+	}
+	
 	private boolean isContainWhitespace(String name) {
 		
 		// check if empty

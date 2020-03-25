@@ -3,17 +3,15 @@ package com.savan.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.savan.model.RegisterAddressModel;
 import com.savan.model.RegisterUserModel;
 import com.savan.service.RegisterAddressService;
 import com.savan.service.RegisterUserService;
@@ -52,14 +50,11 @@ public class LoginController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		//session creation happens here
-		
+		//session creation
+		HttpSession session = request.getSession();
 		
 		//userModel instantiation
 		RegisterUserModel userModel = new RegisterUserModel();
-		
-		//addressModel instantiation
-		RegisterAddressModel addressModel = new RegisterAddressModel();
 		
 		//userService instantiation
 		RegisterUserService userService = new RegisterUserServiceImpl();
@@ -78,52 +73,37 @@ public class LoginController extends HttpServlet {
 				
 		if(userRole == 2) {
 			
-			//to manage user view
-			String user = "user";
-			
 			//get user info from database
 			userModel = userService.getUserInfo(userId);
 			
-			//get user Address from database
-			JSONObject usdrAddress = addressService.getAddressInfo(userId);
-			
-			request.setAttribute("userData", userModel);
-			request.setAttribute("addressData", usdrAddress);
-			request.setAttribute("Login", user);
-			request.setAttribute("userId", userId);
-			
-			RequestDispatcher rd = request.getRequestDispatcher("result.jsp");
-			if (rd != null) {
-				rd.forward(request, response);
-			}
-			else {
-				System.out.println("Unexpected error......!!!");
-			}
-			
-			
+			// get user Address from database 
+			JSONObject userAddress = addressService.getAddressInfo(userId);
+
+			//setting values to session 
+			session.setAttribute("role", "user");
+			session.setAttribute("addressData", userAddress);
+			session.setAttribute("userData", userModel);
+						
+			//set max session time to 30 Minutes
+			session.setMaxInactiveInterval(30 * 60);
+						
+			//redirect to result.jsp
+			response.sendRedirect("result.jsp");
 		}
 		else {
-			
-			//to manage admin view
-			String admin = "admin";
-			
+
 			//getting all user info
 			List<RegisterUserModel> userList = userService.getAllUser();
 			
-			//getting all users address
-			List<List<String>> userAddressList = addressService.getAllUserAddress();
+			//setting values to session 
+			session.setAttribute("role", "admin");
+			session.setAttribute("userList", userList);
 			
-			request.setAttribute("userAddressList", userAddressList);
-			request.setAttribute("userList", userList);
-			request.setAttribute("Login", admin);
+			//set max session time till brouser closed
+			session.setMaxInactiveInterval(-1);
 			
-			RequestDispatcher rd = request.getRequestDispatcher("result.jsp");
-			if (rd != null) {
-				rd.forward(request, response);
-			}
-			else {
-				System.out.println("Unexpected error......!!!");
-			}
+			//redirect to result.jsp
+			response.sendRedirect("result.jsp");
 			
 		}
 		
