@@ -199,9 +199,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 				userModel.setImage(image.getInputStream());
 			}
 			else {
-				
 				String image = request.getParameter("defaultImageValue");
-				System.out.println(image);
 				
 				byte[] buf = new byte[] { 0x12, 0x23 };
 				buf = new sun.misc.BASE64Decoder().decodeBuffer(image);
