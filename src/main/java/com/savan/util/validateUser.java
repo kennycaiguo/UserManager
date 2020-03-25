@@ -20,7 +20,8 @@ import com.savan.service.impl.RegisterUserServiceImpl;
 public class validateUser {
 
 	public String validateUserDetails(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("2");
+
+		//seccess Massage
 		String vlidate = "success";
 		
 		if (isContainWhitespace(request.getParameter("firstNname")) || isContainDigit(request.getParameter("firstNname")) || isContainSpecialCharacter(request.getParameter("firstNname")) || (request.getParameter("firstNname").length() < 2) || (request.getParameter("firstNname").length() > 10)) {
@@ -80,13 +81,8 @@ public class validateUser {
 	}
 	
 	public String validateAddress(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("inside addresss");
-		System.out.println(request.getParameter("home"));
-		System.out.println(request.getParameter("leandmark"));
-		System.out.println(request.getParameter("City"));
-		System.out.println(request.getParameter("State"));
-		System.out.println(request.getParameter("Country"));
-		System.out.println(request.getParameter("ZipCode"));
+		
+		//seccess Massage
 		String vlidate = "success";
 		
 		if (request.getParameter("home") == null || request.getParameter("home").equals("") || (request.getParameter("home").length() < 3) || (request.getParameter("home").length() > 30)) {

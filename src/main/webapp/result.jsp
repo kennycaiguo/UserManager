@@ -399,33 +399,6 @@
 											</div>
 										</div>
 									</div>
-									<%--<div class="col-md-6">
-										<!-- Button trigger modal --> 
-										<button type="button" id="displaybtn" class="btn btn-primary" value="${user.userRId}" data-toggle="modal" data-target="#userAddressList${user.userRId}">
-											 Display Address
-										</button>
-										
-										<!-- Modal -->
-										<div class="modal fade" id="userAddressList${user.userRId}"
-											tabindex="-1" role="dialog"
-											aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-											<div class="modal-dialog" role="document">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h5 class="modal-title" id="exampleModalLongTitle">${user.firstName}'s
-															Address List</h5>
-													</div>
-													<div class="modal-body">
-														<div class="input_fields_wrap"></div>
-													</div>
-													<div class="modal-footer">
-														<button type="button" class="btn btn-secondary"
-															data-dismiss="modal">Close</button>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div> --%>
 								</div>
 
 								<!-- to manage address number -->
