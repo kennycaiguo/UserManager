@@ -22,7 +22,7 @@ import com.savan.dao.impl.RegistrAddressDaoImpl;
  */
 public class RegisterAddressServiceImpl implements RegisterAddressService {
 
-	@Override //used
+	@Override 
 	public boolean addressService(HttpServletRequest request, HttpServletResponse response , int lastId) {
 		
 		//Add user input to Address model class
@@ -67,14 +67,14 @@ public class RegisterAddressServiceImpl implements RegisterAddressService {
 		return addressDao.insert(addressList,lastId);
 	}
 
-	@Override //used
+	@Override 
 	public JSONObject getAddressInfo(int userId) {
 		//getting the user address
 		RegisterAddressDao addressdao = new RegistrAddressDaoImpl();
 		return addressdao.fatchAddress(userId);
 	}
 
-	@Override //used
+	@Override 
 	public boolean updateUserAddress(HttpServletRequest request, HttpServletResponse response, int userId) {
 		
 		// Add user input to Address model class
@@ -122,7 +122,7 @@ public class RegisterAddressServiceImpl implements RegisterAddressService {
 		return addressDao.update(addressList, userId);
 	}
 
-	@Override //used
+	@Override 
 	public boolean deleteUserAddress(int userId) {
 
 		// RegisterAddressDaoImpl to register user Address
@@ -131,7 +131,7 @@ public class RegisterAddressServiceImpl implements RegisterAddressService {
 		
 	}
 
-	@Override //used
+	@Override
 	public boolean deleteSelectedAddress(int addressId) {
 
 		// RegisterAddressDaoImpl to register user Address
@@ -139,7 +139,7 @@ public class RegisterAddressServiceImpl implements RegisterAddressService {
 		return addressDao.remoeSelectedAddress(addressId);
 	}
 
-	@Override //used
+	@Override 
 	public boolean getAddressCount(int userId) {
 
 		// RegisterAddressDaoImpl to register user Address

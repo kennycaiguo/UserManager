@@ -324,11 +324,6 @@ public class RegisterController extends HttpServlet {
 			//get userId 
 			int userId = Integer.parseInt(request.getParameter("userId"));
 			
-			// delete user Address
-			boolean isuserAddressDeleted = addressRegister.deleteUserAddress(userId);
-
-			if (isuserAddressDeleted) {
-
 				// deleting user
 				boolean isuserDeleted = userRegister.deleteUser(userId);
 
@@ -338,10 +333,6 @@ public class RegisterController extends HttpServlet {
 				else {
 					response.getWriter().write("Fail to Delelte User.........");
 				}
-			} 
-			else {
-				response.getWriter().write("Fail to Delelte User.........");
-			}
 		}
 		
 		/*

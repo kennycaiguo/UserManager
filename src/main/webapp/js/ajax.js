@@ -21,6 +21,7 @@ $(document).ready(function() {
 			success : function(data) {
 				var a = $('#example6').DataTable();
 				a.draw();
+				alert(data);
 			},
 			error : function(data) {
 				alert("error");
